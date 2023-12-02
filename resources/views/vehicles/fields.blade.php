@@ -51,16 +51,16 @@
         </div>
         <div class="col-md-6">
             <div class="form-group">
-                <label for="exampleInputEmail3">Num. Placa</label>
-                <input type="text" name="plat_number" value="{{ isset($vehicle) ? $vehicle->plat_number : '' }}"
-                    class="form-control" id="exampleInputEmail3" placeholder="Vehicle Plat Number">
+                <label for="exampleInputEmail3">Numero de Placa del Vehiculo</label>
+                <input type="text" name="plat_number" value="jkp-22-11"
+                    class="form-control" id="exampleInputEmail3" placeholder="Vehicle Plat Number" readonly>
             </div>
         </div>
     </div>
     <div class="row">
         <div class="col-md-6">
             <div class="form-group">
-                <label for="exampleInputEmail3">Duracion de Estacionamiento</label>
+                <label for="exampleInputEmail3">Duracion de Estacionamiento (Dias)</label>
                 <input type="number" name="duration" value="{{ isset($vehicle) ? $vehicle->duration : '' }}"
                     class="form-control" id="exampleInputEmail3" placeholder="Parking Duration">
             </div>
@@ -74,7 +74,7 @@
         </div>
         <div class="col-md-3">
             <div class="form-group">
-                <label for="exampleInputEmail3">Status del  Vehiculo</label>
+                <label for="exampleInputEmail3">Estatus del  Vehiculo</label>
                 <select name="status" class="form-control">
                     @foreach (getVehicleStatus() as $key =>  $status)
                         <option value="{{ $key }}" @if (isset($vehicle))

@@ -22,7 +22,7 @@
                 <div class="nav-item has-sub {{ request()->routeIs('user*')  ? 'open' : ''}}">
                     <a href="javascript:void(0)"><i class="ik ik-user"></i><span>Administrar Admins</span> </a>
                     <div class="submenu-content">
-                        <a href="{{ route('user.create') }}" class="menu-item {{ request()->routeIs('user.create') ? 'active' : '' }}">Crear</a>
+                       
                         <a href="{{ route('user.index') }}" class="menu-item  {{ request()->routeIs('user.index') ? 'active' : '' }}">Lista</a>
                     </div>
                 </div>

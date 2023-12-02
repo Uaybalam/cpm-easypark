@@ -71,13 +71,13 @@
                                         <span class="custom-control-label">&nbsp;Remember Me</span>
                                     </label>
                                 </div>
-                                <div class="col text-right">
+                                {{--  <div class="col text-right">
                                     @if (Route::has('password.request'))
                                     <a class="btn btn-link" href="{{ route('password.request') }}">
                                         {{ __('Forgot Your Password?') }}
                                     </a>
                                 @endif
-                                </div>
+                                </div>  --}}
                             </div>
                             <div class="sign-btn text-center">
                                 <button type="submit" class="btn btn-theme">  {{ __('Login') }}</button>
