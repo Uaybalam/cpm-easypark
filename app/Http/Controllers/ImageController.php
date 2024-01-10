@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+
 use Illuminate\Support\Facades\Storage;
 use GuzzleHttp\Client;
+use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\MultipartStream;
+use GuzzleHttp\Psr7\Utils;
 use thiagoalessio\TesseractOCR\TesseractOCR;
 use Illuminate\Support\Facades\Http;
 use App\Models\Category;
@@ -15,64 +18,54 @@ class ImageController extends Controller
 
     public function index()
     {
-        $arduinoIp = '192.168.132.201';
-
-        // Configura el cliente Guzzle con opciones específicas para permitir HTTP/1.0 y hacer el llamdo para que la esp32 tome la foto
-        $client = new Client([
-            'curl' => [
-                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_0,
-                CURLOPT_HTTPHEADER => ['Expect:', 'Connection: close'],
-                CURLOPT_HEADER => false,
-                CURLOPT_TIMEOUT => 1000,
-            ],
-        ]);
-
-        // Intenta realizar la captura llamando a la URL /capture en tu Arduino.
         try {
-            $capturaResponse = $client->get("http://$arduinoIp/capture");
-            $capturaResult = $capturaResponse->getBody()->getContents();
+            // Reemplaza 'tu_api_key' con tu clave API de Plate Recognizer
+            $apiKey = 'a2eac9effc461f353760bde8fe838e0f257e25aa';
 
-            // Guarda la imagen en el servidor .
-            $imagenPath = public_path('foto.jpg');
-            file_put_contents($imagenPath, $capturaResult);
+            // Reemplaza '192.168.1.100' con la dirección IP de tu cámara
+            $cameraIp = '192.168.100.3:8080';
 
-            // Verifica si la imagen se guardó correctamente antes de procesarla.
-            if (file_exists($imagenPath)) {
-                // Ejecuta Tesseract OCR en la imagen.
-                //Esto para poder cambiar la imagen a texto
-                $result = (new TesseractOCR($imagenPath))->run();
-                $texto = public_path('texto.txt');
-                //se almacena en un texto llamado texto.txt donde viene el texto de la imagen
-                file_put_contents($texto, $result);
-                // Retorna la vista con la imagen y el texto
+            // Hacer la solicitud a la cámara
+            $client = new Client();
+            $response = $client->get("http://{$cameraIp}/photoaf.jpg");
 
-                // Retorna la vista con la imagen y el texto
-                return view('vehicles.create', [
-                    'texto' => $result,
-                    'categories' => Category::get(['id','name']),
-                    'customers' => Customer::get(['id','name'])
-                ]);
+            // Guardar la foto en storage
+            $photoPath = 'photos/' . uniqid() . '.jpg';
+            Storage::put($photoPath, $response->getBody());
 
-
-
-            } else {
-                dd("Error al guardar la imagen.");
-            }
-        } catch (\Exception $e) {
-            $errorMensaje = "Error al capturar: " . $e->getMessage();
-
-
-            return view('vehicles.create', [
-                'errorMensaje' => $errorMensaje,
-                'categories' => Category::get(['id','name']),
-                'customers' => Customer::get(['id','name'])
+            // Construir la solicitud como form-data
+            $multipart = new MultipartStream([
+                [
+                    'name' => 'upload',
+                    'contents' => file_get_contents(storage_path("app/$photoPath")),
+                    'filename' => 'photo.jpg',
+                ],
             ]);
+
+            $request = new Request('POST', 'https://api.platerecognizer.com/v1/plate-reader/', [
+                'Authorization' => 'Token ' . $apiKey,
+            ], $multipart);
+
+            // Enviar la solicitud y obtener la respuesta
+            $response = $client->send($request);
+
+            // Decodificar la respuesta JSON
+            $result = json_decode($response->getBody(), true);
+
+            // Verificar si se detectaron matrículas
+            if (!empty($result['results'])) {
+                // Tomar la primera matrícula detectada
+                $plateNumber = $result['results'][0]['plate'];
+
+                return view('vehicles.create', ['success' => true, 'plate_number' => $plateNumber, 'photo_path' => $photoPath,'categories' => Category::get(['id','name']),
+                'customers' => Customer::get(['id','name'])]);
+            }
+
+            return view('vehicles.create', ['success' => true, 'plate_number' => null, 'photo_path' => $photoPath,'categories' => Category::get(['id','name']),
+            'customers' => Customer::get(['id','name'])]);
+        } catch (\Exception $e) {
+            return view('vehicles.create', ['success' => false, 'error' => $e->getMessage(),'categories' => Category::get(['id','name']),
+            'customers' => Customer::get(['id','name'])]);
         }
-
-
-
     }
-
-
-
 }

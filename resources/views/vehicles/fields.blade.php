@@ -52,8 +52,9 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label for="exampleInputEmail3">Numero de Placa del Vehiculo</label>
-                <input type="text" name="plat_number" value="jkp-22-11"
-                    class="form-control" id="exampleInputEmail3" placeholder="Vehicle Plat Number" readonly>
+                <input type="text" name="plat_number" value="{{ isset($plate_number) ? $plate_number : '' }}"
+       class="form-control" id="exampleInputEmail3" placeholder="Vehicle Plat Number" readonly>
+
             </div>
         </div>
     </div>

@@ -12,6 +12,7 @@
         "laravel/sanctum": "^2.11",
         "laravel/tinker": "^2.5",
         "laravel/ui": "^3.4",
+        "platerecognizer/platerecognizer": "1.0",
         "thiagoalessio/tesseract_ocr": "^2.13"
     },
     "require-dev": {
@@ -63,6 +64,6 @@
         "preferred-install": "dist",
         "sort-packages": true
     },
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "prefer-stable": true
 }

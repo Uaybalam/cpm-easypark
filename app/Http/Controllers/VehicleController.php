@@ -36,7 +36,7 @@ class VehicleController extends Controller
 
     public function show(Vehicle $vehicle)
     {
-        //
+
     }
 
     public function edit(Vehicle $vehicle)
