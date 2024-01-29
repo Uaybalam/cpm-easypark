@@ -57,15 +57,15 @@
                     </div>
                 </div>
 
-                <!-- <div class="nav-lavel">Reporte</div>
+                <div class="nav-lavel">Caja</div>
                 <div class="nav-item has-sub">
-                    <a href="{{ route('reports.index') }}"><i class="ik ik-edit"></i><span>Reporte</span></a>
+                    <a href="{{ route('reports.index') }}"><i class="ik ik-edit"></i><span>Caja</span></a>
                     {{-- <div class="submenu-content">
                         <a href="pages/form-components.html" class="menu-item">Components</a>
                         <a href="pages/form-addon.html" class="menu-item">Add-On</a>
                         <a href="pages/form-advance.html" class="menu-item">Advance</a>
                     </div> --}}
-                </div> -->
+                </div>
             </nav>
         </div>
     </div>
